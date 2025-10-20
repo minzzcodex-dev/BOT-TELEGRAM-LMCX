@@ -28,8 +28,6 @@ Bot Telegram ini berfungsi untuk **mengelola grup otomatis** — dilengkapi deng
 
 ---
 
-## ⚙️ Persiapan & Instalasi
-
 1. Clone repository
 ```bash
 git clone https://github.com/USERNAME/bot-telegram-lmcx.git
