@@ -1,0 +1,84 @@
+<%- include('layout', {
+  title: 'Edit ' + (chat.title || chat.chat_id),
+  token: token,
+  body: `
+    <form method="post" enctype="multipart/form-data" action="/edit/${chat.chat_id}?token=${token}">
+      <div class="grid grid-2">
+
+        <!-- ==================== PENGATURAN UMUM ==================== -->
+        <div>
+          <h3>Pengaturan Umum</h3>
+
+          <label>Anti Link</label>
+          <select name="anti_link" class="input">
+            <option value="1" ${chat.anti_link ? 'selected' : ''}>ON</option>
+            <option value="0" ${!chat.anti_link ? 'selected' : ''}>OFF</option>
+          </select>
+
+          <hr/>
+
+          <!-- ==================== SAPAAN MEMBER BARU ==================== -->
+          <h3>Sapaan Member Baru</h3>
+
+          <label>Aktifkan Sapaan</label>
+          <select name="welcome_enabled" class="input">
+            <option value="1" ${chat.welcome_enabled ? 'selected' : ''}>ON</option>
+            <option value="0" ${!chat.welcome_enabled ? 'selected' : ''}>OFF</option>
+          </select>
+
+          <label>Teks Sambutan</label>
+          <textarea name="welcome_text" rows="4" class="input" placeholder="Selamat datang, @name!">${chat.welcome_text || ''}</textarea>
+
+          <label>Media Sambutan (foto)</label>
+          <input type="file" name="welcome_photo" accept="image/*" class="input"/>
+
+          <label>Media Sambutan (video)</label>
+          <input type="file" name="welcome_video" accept="video/*" class="input"/>
+
+          <label>Atau Masukkan URL Media (foto/video)</label>
+          <input type="text" name="welcome_media_url" value="${chat.welcome_media_url || ''}" placeholder="https://cdn.domain.com/welcome.jpg" class="input"/>
+
+          <label>Teks Tombol (opsional)</label>
+          <input type="text" name="welcome_button_text" value="${chat.welcome_button_text || ''}" placeholder="Contoh: Kunjungi Website" class="input"/>
+
+          <label>URL Tombol (opsional)</label>
+          <input type="text" name="welcome_button_url" value="${chat.welcome_button_url || ''}" placeholder="https://example.com" class="input"/>
+
+          ${chat.welcome_media_path ? `<p>Media saat ini: <code>${chat.welcome_media_path}</code> (${chat.welcome_media_type})</p>` : ''}
+
+        </div>
+
+        <!-- ==================== AUTO KIRIM PESAN ==================== -->
+        <div>
+          <h3>Auto Kirim Pesan</h3>
+
+          <label>Aktifkan Auto</label>
+          <select name="auto_enabled" class="input">
+            <option value="1" ${chat.auto_enabled ? 'selected' : ''}>ON</option>
+            <option value="0" ${!chat.auto_enabled ? 'selected' : ''}>OFF</option>
+          </select>
+
+          <label>Interval (menit)</label>
+          <input class="input" type="number" min="1" name="auto_interval_min" value="${chat.auto_interval_min || 60}" />
+
+          <label>Teks Auto</label>
+          <textarea name="auto_text" rows="5" class="input" placeholder="Tulis caption...">${chat.auto_text || ''}</textarea>
+
+          <label>Media Auto (foto)</label>
+          <input type="file" name="auto_photo" accept="image/*" class="input"/>
+
+          <label>Media Auto (video)</label>
+          <input type="file" name="auto_video" accept="video/*" class="input"/>
+
+          <label>Atau Masukkan URL Media (foto/video)</label>
+          <input type="text" name="auto_media_url" value="${chat.auto_media_url || ''}" placeholder="https://cdn.domain.com/promo.mp4" class="input"/>
+
+          ${chat.auto_media_path ? `<p>Media saat ini: <code>${chat.auto_media_path}</code> (${chat.auto_media_type})</p>` : ''}
+        </div>
+
+      </div>
+      <hr/>
+      <button class="btn" type="submit">Simpan</button>
+    </form>
+  `
+}) %>

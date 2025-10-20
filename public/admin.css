@@ -1,0 +1,15 @@
+:root { --bg:#0f172a; --card:#111827; --muted:#94a3b8; --primary:#2563eb; }
+body{font-family:system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:#e5e7eb;margin:0}
+a{color:#93c5fd;text-decoration:none}
+.container{max-width:980px;margin:40px auto;padding:0 16px}
+.card{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.btn{display:inline-block;padding:10px 14px;border-radius:12px;background:var(--primary);color:#fff;border:0;cursor:pointer}
+.input, textarea, select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #1f2937;background:#0b1220;color:#e5e7eb}
+.grid{display:grid;gap:18px}
+.grid-2{grid-template-columns:1fr 1fr}
+label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+hr{border:none;border-top:1px solid #1f2937;margin:18px 0}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border-bottom:1px solid #1f2937;text-align:left}
+.badge{padding:4px 8px;border-radius:999px;background:#1e293b;color:#cbd5e1;font-size:12px}

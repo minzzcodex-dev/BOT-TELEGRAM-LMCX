@@ -1,0 +1,34 @@
+<%- include('layout', {
+  title: 'Dashboard',
+  token: token,
+  body: `
+    <div class="grid">
+      <p>Bot terhubung pada daftar grup/channel di bawah. Tambahkan bot sebagai admin di grup agar fitur berjalan optimal.</p>
+      <hr/>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>ID</th>
+            <th>Tipe</th>
+            <th>Anti-Link</th>
+            <th>Auto</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${chats.map(c => `
+            <tr>
+              <td>${c.title || '-'}</td>
+              <td><code>${c.chat_id}</code></td>
+              <td><span class="badge">${c.type}</span></td>
+              <td>${c.anti_link ? 'ON' : 'OFF'}</td>
+              <td>${c.auto_enabled ? 'ON (' + c.auto_interval_min + 'm)' : 'OFF'}</td>
+              <td><a class="btn" href="/edit/${c.chat_id}?token=${token}">Edit</a></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `
+}) %>
