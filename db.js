@@ -2,7 +2,6 @@ import Database from 'better-sqlite3';
 
 const db = new Database('bot.db');
 
-// Buat tabel chats
 db.exec(`
 CREATE TABLE IF NOT EXISTS chats (
   chat_id INTEGER PRIMARY KEY,
@@ -11,22 +10,22 @@ CREATE TABLE IF NOT EXISTS chats (
   anti_link INTEGER DEFAULT 1,
   welcome_enabled INTEGER DEFAULT 1,
   welcome_text TEXT,
-  welcome_media_type TEXT,     -- "photo"|"video"|NULL
-  welcome_media_path TEXT,     -- path file lokal
-  welcome_media_url TEXT,      -- 🔥 NEW: url remote
-  welcome_button_text TEXT,    -- 🔥 NEW: teks tombol
-  welcome_button_url TEXT,     -- 🔥 NEW: link tombol
+  welcome_media_type TEXT,     
+  welcome_media_path TEXT,     
+  welcome_media_url TEXT,       
+  welcome_button_text TEXT,    
+  welcome_button_url TEXT,     
   auto_enabled INTEGER DEFAULT 0,
   auto_text TEXT,
   auto_media_type TEXT,
   auto_media_path TEXT,
-  auto_media_url TEXT,         -- 🔥 NEW: url remote untuk auto
+  auto_media_url TEXT,        
   auto_interval_min INTEGER DEFAULT 60,
   next_run_at INTEGER
 );
 `);
 
-// Buat tabel bans
+ 
 db.exec(`
 CREATE TABLE IF NOT EXISTS bans (
   chat_id INTEGER,
