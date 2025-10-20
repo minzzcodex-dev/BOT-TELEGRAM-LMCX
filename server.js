@@ -288,14 +288,14 @@ const upd = {
   welcome_text: body.welcome_text || null,
   welcome_media_type: chat.welcome_media_type,
   welcome_media_path: chat.welcome_media_path,
-  welcome_media_url: body.welcome_media_url || null,          // 🔥 new
-  welcome_button_text: body.welcome_button_text || null,      // 🔥 new
-  welcome_button_url: body.welcome_button_url || null,        // 🔥 new
+  welcome_media_url: body.welcome_media_url || null,          
+  welcome_button_text: body.welcome_button_text || null,      
+  welcome_button_url: body.welcome_button_url || null,        
   auto_enabled: body.auto_enabled === '1' ? 1 : 0,
   auto_text: body.auto_text || null,
   auto_media_type: chat.auto_media_type,
   auto_media_path: chat.auto_media_path,
-  auto_media_url: body.auto_media_url || null,                // 🔥 for future auto-send
+  auto_media_url: body.auto_media_url || null,                
   auto_interval_min: Math.max(1, parseInt(body.auto_interval_min || '60', 10))
 };
 
