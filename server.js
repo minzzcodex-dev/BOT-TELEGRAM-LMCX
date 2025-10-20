@@ -52,19 +52,50 @@ function resetSchedule(chat) {
     scheduleMap.set(id, timer);
     setNextRun.run(Date.now() + ms, id);
   }
-}
-
-async function runAutoFor(chatId) {
+  async function runAutoFor(chatId) {
   const row = getChat.get(chatId);
   if (!row || !row.auto_enabled) return;
 
   const caption = row.auto_text || '';
+
   try {
-    if (row.auto_media_type === 'photo' && row.auto_media_path) {
-      await bot.telegram.sendPhoto(chatId, { source: path.join(__dirname, 'public', row.auto_media_path) }, { caption, parse_mode: 'HTML' });
+    // === PRIORITAS: URL > FILE > TEKS ===
+    if (row.auto_media_url && row.auto_media_url.trim() !== '') {
+      const url = row.auto_media_url.trim().toLowerCase();
+
+      if (url.endsWith('.mp4') || url.includes('video')) {
+        await bot.telegram.sendVideo(chatId, row.auto_media_url, {
+          caption,
+          parse_mode: 'HTML',
+        });
+      } else if (
+        url.endsWith('.jpg') ||
+        url.endsWith('.jpeg') ||
+        url.endsWith('.png') ||
+        url.endsWith('.gif') ||
+        url.includes('cdn') ||
+        url.includes('image')
+      ) {
+        await bot.telegram.sendPhoto(chatId, row.auto_media_url, {
+          caption,
+          parse_mode: 'HTML',
+        });
+      } else {
+        await bot.telegram.sendMessage(chatId, caption, { parse_mode: 'HTML' });
+      }
+    } else if (row.auto_media_type === 'photo' && row.auto_media_path) {
+      await bot.telegram.sendPhoto(
+        chatId,
+        { source: path.join(__dirname, 'public', row.auto_media_path) },
+        { caption, parse_mode: 'HTML' }
+      );
     } else if (row.auto_media_type === 'video' && row.auto_media_path) {
-      await bot.telegram.sendVideo(chatId, { source: path.join(__dirname, 'public', row.auto_media_path) }, { caption, parse_mode: 'HTML' });
-    } else {
+      await bot.telegram.sendVideo(
+        chatId,
+        { source: path.join(__dirname, 'public', row.auto_media_path) },
+        { caption, parse_mode: 'HTML' }
+      );
+    } else if (caption.trim() !== '') {
       await bot.telegram.sendMessage(chatId, caption, { parse_mode: 'HTML' });
     }
   } catch (e) {
@@ -75,7 +106,7 @@ async function runAutoFor(chatId) {
       setNextRun.run(nextAt, chatId);
     }
   }
-}
+    }
 
 // ====== BOT EVENTS ======
 
@@ -127,7 +158,7 @@ bot.on('new_chat_members', async (ctx) => {
     .replace(/@name/gi, names);
 
   try {
-    const keyboard = [];
+     const keyboard = [];
     if (cfg.welcome_button_text && cfg.welcome_button_url) {
       keyboard.push([{ text: cfg.welcome_button_text, url: cfg.welcome_button_url }]);
     }
@@ -166,7 +197,7 @@ bot.on('new_chat_members', async (ctx) => {
       });
     }
 
-    // 🔥 Hapus otomatis setelah 5 menit
+    // Hapus otomatis setelah 5 menit
     if (sentMsg && sentMsg.message_id) {
       setTimeout(async () => {
         try {
@@ -179,7 +210,7 @@ bot.on('new_chat_members', async (ctx) => {
 
   } catch (e) {
     console.error('Welcome send error', e.message);
-  }
+     }
 });
 
 // Perintah admin: /ban @user   -> mute 7 hari
@@ -229,7 +260,7 @@ bot.command('unban', async (ctx) => {
     setBan.run(ctx.chat.id, targetId, Date.now()-1);
     ctx.reply('✅ Mute dicabut.');
   } catch (e) {
-    ctx.reply('Gagal unmute: ' + e.message);
+        ctx.reply('Gagal unmute: ' + e.message);
   }
 });
 
@@ -281,47 +312,61 @@ app.post('/edit/:chatId', upload.fields([
   if (!chat) return res.status(404).send('Chat tidak ditemukan.');
 
   const body = req.body;
-const upd = {
-  chat_id: chatId,
-  anti_link: body.anti_link === '1' ? 1 : 0,
-  welcome_enabled: body.welcome_enabled === '1' ? 1 : 0,
-  welcome_text: body.welcome_text || null,
-  welcome_media_type: chat.welcome_media_type,
-  welcome_media_path: chat.welcome_media_path,
-  welcome_media_url: body.welcome_media_url || null,          
-  welcome_button_text: body.welcome_button_text || null,      
-  welcome_button_url: body.welcome_button_url || null,        
-  auto_enabled: body.auto_enabled === '1' ? 1 : 0,
-  auto_text: body.auto_text || null,
-  auto_media_type: chat.auto_media_type,
-  auto_media_path: chat.auto_media_path,
-  auto_media_url: body.auto_media_url || null,                
-  auto_interval_min: Math.max(1, parseInt(body.auto_interval_min || '60', 10))
-};
+  const upd = {
+     chat_id: chatId,
+    anti_link: body.anti_link === '1' ? 1 : 0,
+    welcome_enabled: body.welcome_enabled === '1' ? 1 : 0,
+    welcome_text: body.welcome_text || null,
+    welcome_media_type: chat.welcome_media_type,
+    welcome_media_path: chat.welcome_media_path,
+    welcome_media_url: body.welcome_media_url || null,
+    welcome_button_text: body.welcome_button_text || null,
+    welcome_button_url: body.welcome_button_url || null,
+    auto_enabled: body.auto_enabled === '1' ? 1 : 0,
+    auto_text: body.auto_text || null,
+    auto_media_type: chat.auto_media_type,
+    auto_media_path: chat.auto_media_path,
+    auto_media_url: body.auto_media_url || null,
+    auto_interval_min: Math.max(1, parseInt(body.auto_interval_min || '60', 10))
+  };
 
-  // handle uploads (prioritas video > foto jika keduanya diisi)
-  if (req.files?.welcome_video?.[0]) {
+  // ======================== PRIORITAS URL / FILE ========================
+  if (body.welcome_media_url && body.welcome_media_url.trim() !== '') {
+    // Jika user isi URL, abaikan file upload & path lama
+    upd.welcome_media_url = body.welcome_media_url.trim();
+    upd.welcome_media_type = null;
+    upd.welcome_media_path = null;
+  } else if (req.files?.welcome_video?.[0]) {
     upd.welcome_media_type = 'video';
     upd.welcome_media_path = path.join('uploads', req.files.welcome_video[0].filename);
+    upd.welcome_media_url = null;
   } else if (req.files?.welcome_photo?.[0]) {
     upd.welcome_media_type = 'photo';
     upd.welcome_media_path = path.join('uploads', req.files.welcome_photo[0].filename);
+    upd.welcome_media_url = null;
   }
 
-  if (req.files?.auto_video?.[0]) {
+  // --- AUTO BROADCAST ---
+  if (body.auto_media_url && body.auto_media_url.trim() !== '') {
+    upd.auto_media_url = body.auto_media_url.trim();
+    upd.auto_media_type = null;
+    upd.auto_media_path = null;
+  } else if (req.files?.auto_video?.[0]) {
     upd.auto_media_type = 'video';
     upd.auto_media_path = path.join('uploads', req.files.auto_video[0].filename);
+    upd.auto_media_url = null;
   } else if (req.files?.auto_photo?.[0]) {
     upd.auto_media_type = 'photo';
     upd.auto_media_path = path.join('uploads', req.files.auto_photo[0].filename);
+    upd.auto_media_url = null;
   }
-
   saveChat.run(upd);
+
   const fresh = getChat.get(chatId);
   resetSchedule(fresh);
-
   res.redirect(`/edit/${chatId}?token=${res.locals.token}`);
 });
+
 
 app.get('/health', (req, res) => res.json({ ok: true }));
 
