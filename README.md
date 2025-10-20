@@ -28,21 +28,23 @@ Bot Telegram ini berfungsi untuk **mengelola grup otomatis** — dilengkapi deng
 
 ---
 
-1. Clone repository
+## Langkah Deploy
 ```bash
+1. Get Repo
 git clone https://github.com/USERNAME/bot-telegram-lmcx.git
-cd bot-telegram-lmcx```
+cd bot-telegram-lmcx
+
 2. Install dependencies
-```bash
-npm install```
+npm install
+
 3. Lakukan Konfigurasi Di .env
-```.env
 BOT_TOKEN=1234567890:YOUR_TELEGRAM_BOT_TOKEN
 ADMIN_TOKEN=supers3cret
-PORT=8080```
+PORT=8080
+
 4. Menjalankan Bot
-```bash
-pm2 start server.js --name lmcx-bot```
+pm2 start server.js --name lmcx-bot
+
 5. Berhasil
-```dashboard admin
-http://YOUR_SERVER_IP:8080/?token=TOKEN_SESUAI_ENV```
+dashboard admin
+http://YOUR_SERVER_IP:8080/?token=TOKEN_SESUAI_ENV
