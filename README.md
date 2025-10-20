@@ -27,24 +27,23 @@ Bot Telegram ini berfungsi untuk **mengelola grup otomatis** — dilengkapi deng
 | 🔒 Ban / Unban | Mute sementara pengguna di grup dengan perintah /ban & /unban |
 
 ---
-
 ## Langkah Deploy
-```bash
-1. Get Repo
+
+### 1. Get Repo
 git clone https://github.com/USERNAME/bot-telegram-lmcx.git
 cd bot-telegram-lmcx
 
-2. Install dependencies
+### 2. Install dependencies
 npm install
 
-3. Lakukan Konfigurasi Di .env
+### 3. Lakukan Konfigurasi Di .env
 BOT_TOKEN=1234567890:YOUR_TELEGRAM_BOT_TOKEN
 ADMIN_TOKEN=supers3cret
 PORT=8080
 
-4. Menjalankan Bot
+### 4. Menjalankan Bot
 pm2 start server.js --name lmcx-bot
 
-5. Berhasil
+### 5. Berhasil
 dashboard admin
-http://YOUR_SERVER_IP:8080/?token=TOKEN_SESUAI_ENV
+http://YOUR_SERVER_IP:8080/?token=TOKEN_SESUAI_ENV```
